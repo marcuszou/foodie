@@ -107,7 +107,7 @@ INSTALLED_APPS = [
 
 MVT - Functions - ![Model-View-Template](assets/3.4-1-MVT.PNG)
 
-MVT - Data flow - ![MVT Data Flow](assets/3.4-2-MVT.png)
+MVT - Data flow - ![MVT Data Flow](assets/3.4-2-MVT.PNG)
 
 ## 3.5 Change routes of foodie/urls.py
 
@@ -138,18 +138,18 @@ def index(request):
 
 ## 3.7 Static vs Dynamic Websites
 
-![Static-Web](assets/3.7-1-Static.png)
+![Static-Web](assets/3.7-1-Static.PNG)
 
-![Dynamic-web](assets/3.7-2-Dynamic.png)
+![Dynamic-web](assets/3.7-2-Dynamic.PNG)
 
-![Frontend-vs-Backend](assets/3.7-3-Frontend-vs-Backend.png)
+![Frontend-vs-Backend](assets/3.7-3-Frontend-vs-Backend.PNG)
 
 ## 3.8 Django Settings and URL Dispatcher
 
-![settings-url-1](assets/3.8-1-settings-vs-urls.png)
+![settings-url-1](assets/3.8-1-settings-vs-urls.PNG)
 
-![settings-url-1](assets/3.8-2-settings-vs-urls.png)
+![settings-url-1](assets/3.8-2-settings-vs-urls.PNG)
 
 ## 3.9 Django Views - Deep Dive
 
-![views-1](assets/3.9-1-views.png)
+![views-1](assets/3.9-1-views.PNG)
