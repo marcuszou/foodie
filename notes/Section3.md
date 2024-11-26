@@ -1,7 +1,9 @@
 # Section 3 - Django Fundamentals - Deep Dive
 
 ## 3.1 Initial Setup
+
 1- Install Python 3.12 and Update pip to latest version
+
 ```shell
 # Go to www.python.org to download the installer files
 # Then install Python 3.12.3 for macOS/Linux/Windows
@@ -10,7 +12,9 @@
 python3 -m pip install --upgrade pip  ## macOS and Linux
 python -m pip install --upgrade pip   ## Windows
 ```
+
 2- Create a project folder and create/activate the virtual Env
+
 ```shell
 mkdir foodie
 cd foodie
@@ -23,16 +27,24 @@ venv/bin/activate        ## macOS, Linux
 python3 -m pip install --upgrade pip  ## macOS and Linux
 python -m pip install --upgrade pip   ## Windows
 ```
-3- Install Django and Create project
+
+3- Install Django
+
 ```shell
 pip install django
+## pip install -r requirements.txt
+```
+
+4- Create the project named `foodie` in current folder (`.`)
+
+```shell
 django-admin startproject foodie .
 ```
 
 ## 3.2 - Django Project File Structure
 
 > foodie/
->
+> 
 > ├── foodie/
 > │   ├─\__init__.py
 > │   ├─ asgi.py
@@ -45,19 +57,26 @@ django-admin startproject foodie .
 ## 3.3 Apps and Running up the Server
 
 1- Start a sandbox app
+
 ```shell
 django-admin startapp sandbox
 ```
+
 2- Initial running up the server
+
 ```shell
 python manage.py runserver
 ```
+
 3- add more routes
+
 ```shell
 ## Create a urls.py in sandbox folder
 touch sandbox/urls.py
 ```
+
 4- edit the sandbox/urls.py
+
 ```python
 from django.urls import path
 from . import views
@@ -66,7 +85,9 @@ urlpatterns = [
     path("", views.index)
 ]
 ```
+
 5- edit sandbox/views.py
+
 ```python
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -75,14 +96,18 @@ from django.shortcuts import render
 def index(request):
     return HttpResponse("Hello World!")
 ```
+
 6- Import the urls of sandbox to foodie/urls.py
+
 ```python
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('sandbox/', include('sandbox.urls')),
 ]
 ```
+
 7- add the app (sandbox) to foodie/settings.py
+
 ```python
 INSTALLED_APPS = [
     # my apps
@@ -95,13 +120,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 ```
+
 8- Go to http://127.0.0.1:8000/sandbox to try
 
 ## 3.4 Django MVT Architecture
 
 1- Building Web Apps with Django
 
-​	--> Define URLs --> Writing Views --> Writing Templates
+​    --> Define URLs --> Writing Views --> Writing Templates
 
 2- Django Architecture
 
@@ -153,3 +179,9 @@ def index(request):
 ## 3.9 Django Views - Deep Dive
 
 ![views-1](assets/3.9-1-views.PNG)
+
+## 3.10 Django Templates
+
+![templates-1](assets/3.10-1-templates.png)
+
+![template-engine](assets/3.10-2-templates-engine.png)
