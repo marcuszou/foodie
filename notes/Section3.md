@@ -185,3 +185,139 @@ def index(request):
 ![templates-1](assets/3.10-1-templates.png)
 
 ![template-engine](assets/3.10-2-templates-engine.png)
+
+## 3.11 Creating an index.html
+
+```shell
+touch sandbox/templates/sandbox/index.html
+## install djLint
+python -m pip install -U djlint
+## also install "djLint" and "Django", and "jinja" in VS Code Extension
+
+```
+
+## 3.12 Passing dynamic data to template index.html
+
+The `sandbox/views.py` is like:
+
+```python
+# from random import choice
+from django.http import HttpResponse
+from django.shortcuts import render
+
+dataset = {"name": "Marcus", "age": 123}
+context = {"data": dataset}
+# Create your views here.
+def index(request):
+    return render(request, "sandbox/index.html", context)
+```
+
+The `sandbox/templates/sandbox/index.html` is like:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>foodie</title>
+</head>
+<body>
+    <p>Hello World! {{ data.name }}</p>
+</body>
+</html>
+```
+
+## 3.13 DTL - Tags and Looping Through a List
+
+ The sandbox/views.py be like:
+
+```
+...
+foodset = ["Pizza", "Pasta", "Salad", "Bread"]
+context = {"foods": foodset}
+...
+```
+
+The index.html be like:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>foodie</title>
+</head>
+<body>
+    <p>Hello World! {{ data.name }}</p>
+
+    {% if foods %}
+        <ul>
+            {% for food in foods %}
+                <li>
+                    {{ food }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p> No food found. </p>
+    {% endif %}
+
+</body>
+</html>
+```
+
+## 3.14 DTL - Add else tag
+
+as per above
+
+## 3.15 Creating base template and extend it
+
+Create a base.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>foodie</title>
+</head>
+<body>
+    <nav>
+        <div>Foodie</div>
+    </nav>
+
+    <div class="container">
+         {% block content %}
+
+         {% endblock content %}
+
+    </div>
+
+</body>
+</html>
+```
+
+change the Index.html
+
+```html
+{% extends "sandbox/base.html" %}
+{% block content %}
+
+    {% if foods %}
+        <ul>
+            {% for food in foods %}
+                <li>
+                    {{ food }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p> No food found. </p>
+    {% endif %}
+
+{% endblock content %}
+```
+
