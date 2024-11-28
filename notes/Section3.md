@@ -1,5 +1,7 @@
 # Section 3 - Django Fundamentals - Deep Dive
 
+
+
 ## 3.1 Initial Setup
 
 1- Install Python 3.12 and Update pip to latest version
@@ -197,9 +199,14 @@ def index(request):
 
 ```shell
 touch sandbox/templates/sandbox/index.html
-## install djLint
+
+## install djLint package in terminal
 python -m pip install -U djlint
-## also install "djLint" and "Django", and "jinja" in VS Code Extension
+
+## also install the followings in VS Code Extension
+### "djLint" by monosans
+### "Django" by Baptise Darthenay
+### "jinja" by wholroyd
 ```
 
 ## 3.12 Passing dynamic data to template index.html
@@ -238,7 +245,7 @@ The `sandbox/templates/sandbox/index.html` is like:
 
  The sandbox/views.py be like:
 
-```
+```python
 ...
 foodset = ["Pizza", "Pasta", "Salad", "Bread"]
 context = {"foods": foodset}
@@ -308,7 +315,7 @@ Create a base.html
 
 change the Index.html
 
-```html
+```django
 {% extends "sandbox/base.html" %}
 {% block content %}
 
