@@ -1,12 +1,25 @@
 # Foodie - A Django project
 
+
+
 ## Section 1 - Introduction
 
-## Section 2 - Dev Env setup
+- [Note](notes/section1.md) 
 
-## Section 3 - [Django Fundamentals - Deep Dive](notes/Section3.md)
+## Section 2 - Development Environment setup
 
-## Section 4 - [Django Models and Database - ORM & Migrations](notes/Section4.md)
+- [Note](notes/section2.md)
+
+## Section 3 - Django Fundamentals - Deep Dive
+
+- [Note](notes/section3.md)
+
+## Section 4 - Django Models and Database - ORM & Migrations
+
+- [Note](notes/section4.md)
+
+
 
 ## License
+
 MIT

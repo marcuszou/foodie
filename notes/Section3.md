@@ -43,15 +43,23 @@ django-admin startproject foodie .
 
 ## 3.2 - Django Project File Structure
 
-> foodie/<br>
-> ├── foodie/<br>
-> │   ├─\__init__.py<br>
-> │   ├─ asgi.py<br>
-> │   ├─ settings.py<br>
-> │   ├─ urls.py<br>
-> │   ├─ wsgi.py<br>
-> ├── manage.py<br>
-> ├── venv/<br>
+> foodie/
+> 
+> ├── foodie/
+> 
+> │   ├─\__init__.py
+> 
+> │   ├─ asgi.py
+> 
+> │   ├─ settings.py
+> 
+> │   ├─ urls.py
+> 
+> │   ├─ wsgi.py
+> 
+> ├── manage.py
+> 
+> ├── venv/
 
 ## 3.3 Apps and Running up the Server
 
@@ -192,7 +200,6 @@ touch sandbox/templates/sandbox/index.html
 ## install djLint
 python -m pip install -U djlint
 ## also install "djLint" and "Django", and "jinja" in VS Code Extension
-
 ```
 
 ## 3.12 Passing dynamic data to template index.html
