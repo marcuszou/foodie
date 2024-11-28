@@ -43,16 +43,15 @@ django-admin startproject foodie .
 
 ## 3.2 - Django Project File Structure
 
-> foodie/
-> 
-> ├── foodie/
-> │   ├─\__init__.py
-> │   ├─ asgi.py
-> │   ├─ settings.py
-> │   ├─ urls.py
-> │   ├─ wsgi.py
-> ├── manage.py
-> ├── venv/
+> foodie/<br>
+> ├── foodie/<br>
+> │   ├─\__init__.py<br>
+> │   ├─ asgi.py<br>
+> │   ├─ settings.py<br>
+> │   ├─ urls.py<br>
+> │   ├─ wsgi.py<br>
+> ├── manage.py<br>
+> ├── venv/<br>
 
 ## 3.3 Apps and Running up the Server
 
@@ -320,4 +319,3 @@ change the Index.html
 
 {% endblock content %}
 ```
-
