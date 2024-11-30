@@ -18,6 +18,10 @@
 
 - [Note](notes/section4.md)
 
+## Section 5 - Django QuerySet API
+
+- [Note](notes/Section5.md)
+
 
 
 ## License
