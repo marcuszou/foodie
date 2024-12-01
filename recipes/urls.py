@@ -4,5 +4,6 @@ from recipes import views
 
 app_name = "recipes"
 urlpatterns = [
-    path("", views.recipes)
+    path("", views.recipes),
+    path("<int:recipe_id>", views.recipe)
 ]

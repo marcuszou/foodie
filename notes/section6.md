@@ -1,10 +1,6 @@
 # Section 6 - Django Templates amd Static Files
 
-
-
 ## 6.1 Creating the base.html template, Navbar and Footer
-
-
 
 1- Update the `templates/base.html` :
 
@@ -65,15 +61,100 @@ def recipes(request):
 
 4- Test out http://127.0.0.1:8000/recipes/ and http://127.0.0.1:8000/, they should have same interface as of now.
 
-
-
-
-
 ## 6.2 Showing all recipes in a Template
 
-To be fulfilled
+Change the `recipes/views.py`:
+
+```python
+# recipes/views.py
+from django.shortcuts import render
+from recipes.models import Recipe
+
+# Create your views here.
+def recipes(request):
+
+    recipes = Recipe.objects.all()
+    context = {"recipes": recipes}
+
+    return render(request, "recipes/recipes.html", context)
+```
+
+then update the `recipes/templates/recipes/recipes.html`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+    <div>
+        {% for recipe in recipes %}
+        <div>
+            <h5> {{ recipe.name }} </h5>
+            <p> {{ recipe.description }} </p>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock content %}
+```
+
+## 6.3 Showing the Recipes in the Details Template
+
+Change the `recipes/urls.py`:
+
+```python
+# recipes/urls.py
+from django.urls import path
+from recipes import views
+
+app_name = "recipes"
+urlpatterns = [
+    path("", views.recipes),
+    path("<int:recipe_id>", views.recipe)
+]
+```
+
+Update the `recipes/views.py`:
+
+```python
+# recipes/views.py
+from django.shortcuts import render
+from recipes.models import Recipe
+
+# Create your views here.
+def recipes(request):
+
+    recipes = Recipe.objects.all()
+    context = {"recipes": recipes}
+
+    return render(request, "recipes/recipes.html", context)
+
+def recipe(request, recipe_id):
+    recipe = Recipe.objects.get(id=recipe_id)
+    context = {
+        "recipe": recipe
+    }
+
+    return render(request, "recipes/recipe.html", context)
+```
+
+Create a detailed recipe html: `recipes/templates/recipes/recipe.html`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+    <div>
+        <div>
+            <h5> {{ recipe.name }} </h5>
+        </div>
+    </div>
+
+{% endblock content %}
+```
+
+then visit: http:/127.0.0.1:8000/recipes/3 for a lokk.
 
 
+
+## 6.4
 
 
 
