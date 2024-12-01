@@ -98,8 +98,6 @@ def recipes(request):
 
 3- Take a look at http://127.0.0.1:8000/recipes.
 
-
-
 ## 6.3 Showing the Recipes in the Details Template
 
 1- Update the `recipes/urls.py`:
@@ -155,8 +153,6 @@ def recipe(request, recipe_id):
 ```
 
 4-  Then visit http://127.0.0.1:8000/recipes/3 for a look.
-
- 
 
 ## 6.4 Adding URL Template Tag for Navigating to the Recipe Detail Page
 
@@ -237,6 +233,139 @@ def recipe(request, recipe_id):
 ```
 
 5- Take a look at http://127.0.0.1:8000/recipes and click the link.
+
+
+
+## 6.5 Redirecting the Home Page when Logo is Clicked
+
+1- Update `templates/base.html` since all apps share the base.html:
+
+```django
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>foodie</title>
+</head>
+<body>
+    <nav>
+        <div>
+            <a href="{% url "foodie_app:index" %}"> Foodie </a>
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </main>
+    <div>
+        <hr>
+        <footer>
+            <pre>Footer</pre>
+        </footer>
+    </div>
+</body>
+</html>
+```
+
+2- Update the main app `foodie_app/urls.py`:
+
+```python
+# foodie_app/urls.py
+from django.urls import path
+from . import views
+
+app_name = "foodie_app"
+urlpatterns = [
+    path("", views.index, name="index")
+]
+```
+
+3- Give a try on any app page.
+
+
+
+## 6.6 Show categories and navigating to All Recipes under Specific Category
+
+1- Update `foodie_app/views.py`: 
+
+```python
+# foodie_app/views.py
+from django.shortcuts import render
+from .models import Category
+from recipes.models import Recipe
+
+# Create your views here.
+def index(request):
+    categories = Category.objects.all()
+    context = {"categories": categories}
+
+    return render(request, "foodie_app/index.html", context)
+
+def recipes(request, category_id):
+    recipes = Recipe.objects.filter(category=category_id)
+    category = Category.objects.get(pk=category_id)
+
+    context = {"recipes": recipes, "category": category}
+    return render(request, "foodie_app/recipes.html", context)
+```
+
+2- Update `foodie_app/templates/foodie_app/index.html`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+    <h3>Categories</h3>
+    <div>
+        {% for category in categories %}
+            <div>
+                <a href="{% url "foodie_app:recipes" category.id %}"> {{ category }} </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
+```
+
+3- Create `foodie_app/templates/foodie_app/recipes.html`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+    <h3>Recipes under <i>{{ category }}</i> </h3>
+    <div>
+        {% for recipe in recipes %}
+            <div>
+                <div>
+                    <h5> {{ recipe.name }} </h5>
+                    <p> {{ recipe.description }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
+```
+
+4- Update `foodie_app/urls.py`:
+
+```python
+# foodie_app/urls.py
+from django.urls import path
+from . import views
+
+app_name = "foodie_app"
+urlpatterns = [
+    path("", views.index, name="index"),
+    path("recipes/<int:category_id>/", views.recipes, name="recipes")
+]
+```
+
+5- Try http://127.0.0.1:8000 : click "Salad" to view 2 Salads in the database!
+
+
+
+
 
 
 
