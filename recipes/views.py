@@ -16,4 +16,4 @@ def recipe(request, recipe_id):
         "recipe": recipe
     }
 
-    return render(request, "recipes/recipe.html", context)
+    return render(request, "recipes/recipeDetails.html", context)

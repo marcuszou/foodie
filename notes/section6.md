@@ -63,7 +63,7 @@ def recipes(request):
 
 ## 6.2 Showing all recipes in a Template
 
-Change the `recipes/views.py`:
+1- Change the `recipes/views.py`:
 
 ```python
 # recipes/views.py
@@ -79,7 +79,7 @@ def recipes(request):
     return render(request, "recipes/recipes.html", context)
 ```
 
-then update the `recipes/templates/recipes/recipes.html`:
+2- Update the `recipes/templates/recipes/recipes.html`:
 
 ```django
 {% extends "base.html" %}
@@ -96,9 +96,13 @@ then update the `recipes/templates/recipes/recipes.html`:
 {% endblock content %}
 ```
 
+3- Take a look at http://127.0.0.1:8000/recipes.
+
+
+
 ## 6.3 Showing the Recipes in the Details Template
 
-Change the `recipes/urls.py`:
+1- Update the `recipes/urls.py`:
 
 ```python
 # recipes/urls.py
@@ -112,7 +116,7 @@ urlpatterns = [
 ]
 ```
 
-Update the `recipes/views.py`:
+2- Update the `recipes/views.py`:
 
 ```python
 # recipes/views.py
@@ -133,10 +137,10 @@ def recipe(request, recipe_id):
         "recipe": recipe
     }
 
-    return render(request, "recipes/recipe.html", context)
+    return render(request, "recipes/recipeDetails.html", context)
 ```
 
-Create a detailed recipe html: `recipes/templates/recipes/recipe.html`:
+3- Create a detailed recipe html: `recipes/templates/recipes/recipeDetails.html`:
 
 ```django
 {% extends "base.html" %}
@@ -150,11 +154,91 @@ Create a detailed recipe html: `recipes/templates/recipes/recipe.html`:
 {% endblock content %}
 ```
 
-then visit: http:/127.0.0.1:8000/recipes/3 for a lokk.
+4-  Then visit http://127.0.0.1:8000/recipes/3 for a look.
+
+ 
+
+## 6.4 Adding URL Template Tag for Navigating to the Recipe Detail Page
+
+1- Update `recipes/urls.py` adding the patern name (a.k.a. namespace):
+
+```python
+# recipes/urls.py
+from django.urls import path
+from recipes import views
+
+app_name = "recipes"
+urlpatterns = [
+    # Adding pattern name in the end of each path PLEASE,
+    # as such, serving the calling from recipes.html.
+    path("", views.recipes, name="index"),
+    path("<int:recipe_id>", views.recipe, name="recipe_detail"),
+]
+```
+
+2- Maintain `recipes/views.py`:
+
+```python
+# recipes/views.py
+from django.shortcuts import render
+from recipes.models import Recipe
+
+# Create your views here.
+def recipes(request):
+
+    recipes = Recipe.objects.all()
+    context = {"recipes": recipes}
+
+    return render(request, "recipes/recipes.html", context)
+
+def recipe(request, recipe_id):
+    recipe = Recipe.objects.get(id=recipe_id)
+    context = {"recipe": recipe}
+
+    return render(request, "recipes/recipeDetails.html", context)
+```
+
+3- Update the `recipes/templates/recipes/recipes.html`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+    <div>
+        {% for recipe in recipes %}
+        <div>
+            <h5> {{ recipe.name }} </h5>
+            <p> {{ recipe.description }} </p>
+            <a href="{% url 'recipes:recipe_detail' recipe.id %}" > View Recipe Details </a>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock content %}
+```
+
+4- Update `recipes/templates/recipes/recipeDetails.html`
+
+```django
+{% extends "base.html" %}
+{% block content %}
+    <div>
+        <div>
+            <h5> {{ recipe.name }} </h5>
+            <i>Description: </i>
+            <p> {{ recipe.description }} </p>
+            <i>Ingredients: </i>
+            <p> {{ recipe.ingredients }} </p>
+            <i>Directions: </i>
+            <p> {{ recipe.directions }} </p>
+        </div>
+    </div>
+
+{% endblock content %}
+```
+
+5- Take a look at http://127.0.0.1:8000/recipes and click the link.
 
 
-
-## 6.4
 
 
 
