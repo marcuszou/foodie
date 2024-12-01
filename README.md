@@ -20,7 +20,7 @@
 
 ## Section 5 - Django QuerySet API
 
-- [Note](notes/Section5.md)
+- [Note](notes/section5.md)
 
 
 
