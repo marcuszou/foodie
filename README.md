@@ -1,7 +1,5 @@
 # Foodie - A Django project
 
-
-
 ## Section 1 - Introduction
 
 - [Note](notes/section1.md) 
@@ -21,6 +19,12 @@
 ## Section 5 - Django QuerySet API
 
 - [Note](notes/section5.md)
+
+## Section 6 - Django Templates and Static Files
+
+- [Note](notes/section6.md)
+
+
 
 
 
