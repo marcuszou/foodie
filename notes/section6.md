@@ -569,7 +569,43 @@ For sure, in the `sandbox/templates/sandbox/index.html`, you have to replace `re
 
 But this is not a good practice but a lazy and ambiguous coding. Not encouraged!
 
-## 6.11 
+## 6.11 Dynamical Filtering in Class-based Views
+
+A good example is to filter the recipe list with name including "Salad" (we have 2 salads so far). It's done by updating the `sandbox/views.py	 file:
+
+```django
+# sandbox/views.py
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.generic import ListView, DetailView
+
+from recipes.models import Recipe
+
+# Function based View
+## data = ["Pizza", "Pasta", "Salad", "Bread"]
+## context = {"foods", data}
+data = Recipe.objects.all()
+context = {"recipes": data}
+# Create your views here.
+def index(request):
+    return render(request, "sandbox/index.html", context)
+
+# Class-based View
+class RecipeListView(ListView):
+    model = Recipe
+    template_name = "sandbox/index.html"
+    context_object_name = "recipes"
+    
+		## Dynamic filtering
+    def get_queryset(self):
+        filtered_recipes = Recipe.objects.filter(category__name_iexact="Salad")
+        return filtered_recipes
+
+class RecipeDetailView(DetailView):
+    model = Recipe
+    template_name = "sandbox/recipeDetail.html"
+    context_object_name = "recipe"
+```
 
 
 

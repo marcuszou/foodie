@@ -19,6 +19,11 @@ class RecipeListView(ListView):
     model = Recipe
     template_name = "sandbox/index.html"
     context_object_name = "recipes"
+    
+    def get_queryset(self):
+        filtered_recipes = Recipe.objects.filter(category__name_iexact="Salad")
+        return filtered_recipes
+    
 
 class RecipeDetailView(DetailView):
     model = Recipe
