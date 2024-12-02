@@ -1,7 +1,7 @@
 # sandbox/views.py
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from recipes.models import Recipe
 
@@ -19,3 +19,8 @@ class RecipeListView(ListView):
     model = Recipe
     template_name = "sandbox/index.html"
     context_object_name = "recipes"
+
+class RecipeDetailView(DetailView):
+    model = Recipe
+    template_name = "sandbox/recipeDetail.html"
+    context_object_name = "recipe"

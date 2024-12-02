@@ -5,7 +5,7 @@
         <ul>
             {% for recipe in recipes %}
                 <li>
-                    {{ recipe.name }}
+                    <a href="{% url "sandbox:recipeDetail" recipe.id %}"> {{ recipe.name }} </a>
                 </li>
             {% endfor %}
         </ul>

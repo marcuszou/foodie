@@ -466,6 +466,97 @@ urlpatterns = [
 
 4- Take a look at http://127.0.0.1:8000/sandbox and http://127.0.0.1:8000/sandbox/recipes .
 
+## 6.9 Class-based Biews - SHowing Details Page
+
+1- Update `sandbox/urls.py` by adding one route:
+
+```python
+# sandbox/urls.py
+from django.urls import path
+from . import views
+
+app_name = "sandbox"
+urlpatterns = [
+    path("", views.index, name="index"),
+    path('recipes/', views.RecipeListView.as_view(), name="recipe_list"),
+    path('recipes/<int:pk>', views.RecipeDetailView.as_view(), name="recipeDetail")
+]
+```
+
+2- Update `sandbox/views.py`:
+
+```python
+# sandbox/views.py
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.generic import ListView, DetailView
+
+from recipes.models import Recipe
+
+# Function based View
+## data = ["Pizza", "Pasta", "Salad", "Bread"]
+## context = {"foods", data}
+data = Recipe.objects.all()
+context = {"recipes": data}
+# Create your views here.
+def index(request):
+    return render(request, "sandbox/index.html", context)
+
+# Class-based View
+class RecipeListView(ListView):
+    model = Recipe
+    template_name = "sandbox/index.html"
+    context_object_name = "recipes"
+
+class RecipeDetailView(DetailView):
+    model = Recipe
+    template_name = "sandbox/recipeDetail.html"
+    context_object_name = "recipe"
+```
+
+3- Create a `sandbox/templates/sandbox/recipeDetail.html`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+
+    {% if recipe %}
+        <article>
+            <h2>{{ recipe.name }} </h2>
+            Description: <p> {{ recipe.description }} </p>
+            Ingredients: <p> {{ recipe.ingredients }} </p>
+            Directions: <p> {{ recipe.directions }} </p>
+        </article>
+    {% else %}
+        <p> No recipes found. </p>
+    {% endif %}
+
+{% endblock content %}
+```
+
+4- Update `sandbox/templates/sandbox/index.html` by adding the `<a href="">`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+
+    {% if recipes %}
+        <ul>
+            {% for recipe in recipes %}
+                <li>
+                    <a href="{% url "sandbox:recipeDetail" recipe.id %}"> {{ recipe.name }} </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p> No reciped found. </p>
+    {% endif %}
+
+{% endblock content %}
+```
+
+5- Take a look!
+
 
 
 
