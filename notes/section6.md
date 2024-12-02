@@ -557,6 +557,20 @@ class RecipeDetailView(DetailView):
 
 5- Take a look!
 
+## 6.10 The object_list variable
+
+Basically we can use a default `object_list` as the context_object_name in the `sandbox/urls.py` file while commenting out the line of:
+
+```django
+## context_object_name = "recipes"
+```
+
+For sure, in the `sandbox/templates/sandbox/index.html`, you have to replace `recipes` with `object_list`.
+
+But this is not a good practice but a lazy and ambiguous coding. Not encouraged!
+
+## 6.11 
+
 
 
 
