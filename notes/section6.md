@@ -1,5 +1,7 @@
 # Section 6 - Django Templates amd Static Files
 
+
+
 ## 6.1 Creating the base.html template, Navbar and Footer
 
 1- Update the `templates/base.html` :
@@ -61,6 +63,8 @@ def recipes(request):
 
 4- Test out http://127.0.0.1:8000/recipes/ and http://127.0.0.1:8000/, they should have same interface as of now.
 
+
+
 ## 6.2 Showing all recipes in a Template
 
 1- Change the `recipes/views.py`:
@@ -97,6 +101,8 @@ def recipes(request):
 ```
 
 3- Take a look at http://127.0.0.1:8000/recipes.
+
+
 
 ## 6.3 Showing the Recipes in the Details Template
 
@@ -153,6 +159,8 @@ def recipe(request, recipe_id):
 ```
 
 4-  Then visit http://127.0.0.1:8000/recipes/3 for a look.
+
+
 
 ## 6.4 Adding URL Template Tag for Navigating to the Recipe Detail Page
 
@@ -234,6 +242,8 @@ def recipe(request, recipe_id):
 
 5- Take a look at http://127.0.0.1:8000/recipes and click the link.
 
+
+
 ## 6.5 Redirecting the Home Page when Logo is Clicked
 
 1- Update `templates/base.html` since all apps share the base.html:
@@ -282,6 +292,8 @@ urlpatterns = [
 ```
 
 3- Give a try on any app page.
+
+
 
 ## 6.6 Show categories and navigating to All Recipes under Specific Category
 
@@ -359,6 +371,8 @@ urlpatterns = [
 
 5- Try http://127.0.0.1:8000 : click "Salad" to view 2 Salads in the database!
 
+
+
 ## 6.7 The Meta Class and Options
 
 The sub-class created inside a main class is called __meta class__. It's used for customizing the main class.
@@ -385,6 +399,8 @@ class Category(models.Model):
 ```
 
 Documentation website for Meta Options: https://docs.djangoproject.com/en/5.1/ref/models/options/
+
+
 
 ## 6.8 Class-based Views
 
@@ -465,6 +481,8 @@ urlpatterns = [
 ```
 
 4- Take a look at http://127.0.0.1:8000/sandbox and http://127.0.0.1:8000/sandbox/recipes .
+
+
 
 ## 6.9 Class-based Biews - SHowing Details Page
 
@@ -557,6 +575,8 @@ class RecipeDetailView(DetailView):
 
 5- Take a look!
 
+
+
 ## 6.10 The object_list variable
 
 Basically we can use a default `object_list` as the context_object_name in the `sandbox/urls.py` file while commenting out the line of:
@@ -568,6 +588,8 @@ Basically we can use a default `object_list` as the context_object_name in the `
 For sure, in the `sandbox/templates/sandbox/index.html`, you have to replace `recipes` with `object_list`.
 
 But this is not a good practice but a lazy and ambiguous coding. Not encouraged!
+
+
 
 ## 6.11 Dynamical Filtering in Class-based Views
 
@@ -608,6 +630,92 @@ class RecipeDetailView(DetailView):
 ```
 
 
+
+## 6.12 Creating Customized Class-based View
+
+1- Update `sandbox/views.py` by adding a `SpecificRecipeView` :
+
+```python
+# sandbox/views.py
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.generic import ListView, DetailView, View
+
+from recipes.models import Recipe
+
+# Function based View
+## data = ["Pizza", "Pasta", "Salad", "Bread"]
+## context = {"foods", data}
+data = Recipe.objects.all()
+context = {"recipes": data}
+# Create your views here.
+def index(request):
+    return render(request, "sandbox/index.html", context)
+
+# Class-based View
+class RecipeListView(ListView):
+    model = Recipe
+    template_name = "sandbox/index.html"
+    context_object_name = "recipes"
+    
+    def get_queryset(self):
+        filtered_recipes = Recipe.objects.filter(category__name_iexact="Salad")
+        return filtered_recipes
+    
+class RecipeDetailView(DetailView):
+    model = Recipe
+    template_name = "sandbox/recipeDetail.html"
+    context_object_name = "recipe"
+
+## Customized View
+class SpecificRecipesView(View):
+    def get(self, request, *args, **kwargs):
+        ## fetch recipes with "refreshing" in the description
+        refreshing_recipes = Recipe.objects.filter(description__icontains="refreshing")
+        context = {"refreshing": refreshing_recipes}
+        return render(request, 'sandbox/refreshing_recipes.html', context)
+```
+
+2- Update `sandbox/urls.py`:
+
+```python
+# sandbox/urls.py
+from django.urls import path
+from . import views
+
+app_name = "sandbox"
+urlpatterns = [
+    path("", views.index, name="index"),
+    path("recipes/", views.RecipeListView.as_view(), name="recipe_list"),
+    path("recipes/<int:pk>", views.RecipeDetailView.as_view(), name="recipeDetail"),
+    path("refreshing/", views.SpecificRecipesView.as_view(), name="refreshing_recipes") 
+]
+```
+
+3- Crteate a new `sandbox/templates/sandbox/refreshing_recipes.html`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+
+    {% if refreshing %}
+        <ul>
+            {% for recipe in refreshing %}
+                <li>
+                    <a href="{% url "sandbox:recipeDetail" recipe.id %}"> {{ recipe.name }} </a>
+                    Description:
+                    <pre>{{ recipe.description}}</pre>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p> No reciped found. </p>
+    {% endif %}
+
+{% endblock content %}
+```
+
+4- Tahe a look at http://127.0.0.1:8000/sandbox/refreshing .
 
 
 

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+    {% if refreshing %}
+        <ul>
+            {% for recipe in refreshing %}
+                <li>
+                    <a href="{% url "sandbox:recipeDetail" recipe.id %}"> {{ recipe.name }} </a>
+                    Description:
+                    <pre>{{ recipe.description}}</pre>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p> No reciped found. </p>
+    {% endif %}
+
+{% endblock content %}
