@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 
-    {% if foods %}
+    {% if recipes %}
         <ul>
-            {% for food in foods %}
+            {% for recipe in recipes %}
                 <li>
-                    {{ food }}
+                    {{ recipe.name }}
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p> No food found. </p>
+        <p> No reciped found. </p>
     {% endif %}
 
 {% endblock content %}

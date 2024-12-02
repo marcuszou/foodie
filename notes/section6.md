@@ -234,8 +234,6 @@ def recipe(request, recipe_id):
 
 5- Take a look at http://127.0.0.1:8000/recipes and click the link.
 
-
-
 ## 6.5 Redirecting the Home Page when Logo is Clicked
 
 1- Update `templates/base.html` since all apps share the base.html:
@@ -284,8 +282,6 @@ urlpatterns = [
 ```
 
 3- Give a try on any app page.
-
-
 
 ## 6.6 Show categories and navigating to All Recipes under Specific Category
 
@@ -363,8 +359,6 @@ urlpatterns = [
 
 5- Try http://127.0.0.1:8000 : click "Salad" to view 2 Salads in the database!
 
-
-
 ## 6.7 The Meta Class and Options
 
 The sub-class created inside a main class is called __meta class__. It's used for customizing the main class.
@@ -385,12 +379,92 @@ class Category(models.Model):
         ordering = ["-date_added"]
         verbose_name = "Category"
         verbose_name_plural = "Categories"
-    
+
     def __str__(self):
         return self.name
 ```
 
 Documentation website for Meta Options: https://docs.djangoproject.com/en/5.1/ref/models/options/
+
+## 6.8 Class-based Views
+
+We've talked about function-based views quite a lot in the past sections, here is the Class-based Views:
+
+![](assets/6.8-1-class-based-views.png)
+
+Advantages of Class-based views:
+
+- __Reusability__ - CBVs promote code reuse
+
+- __Extensibility__ - easy to add or override functionality
+
+- __Organization__ - help keep your code organized and structured
+
+
+
+1- Update `sandbox/views.py`:
+
+```python
+# sandbox/views.py
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.generic import ListView
+
+from recipes.models import Recipe
+
+# Function based View
+## data = ["Pizza", "Pasta", "Salad", "Bread"]
+## context = {"foods", data}
+data = Recipe.objects.all()
+context = {"recipes": data}
+# Create your views here.
+def index(request):
+    return render(request, "sandbox/index.html", context)
+
+# Class-based View
+class RecipeListView(ListView):
+    model = Recipe
+    template_name = "sandbox/index.html"
+    context_object_name = "recipes"
+
+```
+
+2- Update `sandbox/urls.py`:
+
+```python
+# sandbox/urls.py
+from django.urls import path
+from . import views
+
+app_name = "sandbox"
+urlpatterns = [
+    path("", views.index, name="index"),
+    path('recipes/', views.RecipeListView.as_view(), name="recipes_list")
+]
+```
+
+3- Update `sandbox/templates/sandbox/index.html`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+
+    {% if recipes %}
+        <ul>
+            {% for recipe in recipes %}
+                <li>
+                    {{ recipe.name }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p> No reciped found. </p>
+    {% endif %}
+
+{% endblock content %}
+```
+
+4- Take a look at http://127.0.0.1:8000/sandbox and http://127.0.0.1:8000/sandbox/recipes .
 
 
 

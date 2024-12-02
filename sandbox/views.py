@@ -1,12 +1,21 @@
 # sandbox/views.py
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.generic import ListView
 
-dataset = {"name": "Marcus", "age": 123}
-context1 = {"data": dataset}
+from recipes.models import Recipe
 
-foodset = ["Pizza", "Pasta", "Salad", "Bread"]
-context = {"foods": foodset}
+# Function based View
+## data = ["Pizza", "Pasta", "Salad", "Bread"]
+## context = {"foods", data}
+data = Recipe.objects.all()
+context = {"recipes": data}
 # Create your views here.
 def index(request):
     return render(request, "sandbox/index.html", context)
+
+# Class-based View
+class RecipeListView(ListView):
+    model = Recipe
+    template_name = "sandbox/index.html"
+    context_object_name = "recipes"
