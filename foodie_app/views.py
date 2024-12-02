@@ -1,5 +1,7 @@
 # foodie_app/views.py
 from django.shortcuts import render
+
+from foodie_app.forms import CategoryForm
 from .models import Category
 from recipes.models import Recipe
 
@@ -16,3 +18,8 @@ def recipes(request, category_id):
 
     context = {"recipes": recipes, "category": category}
     return render(request, "foodie_app/recipes.html", context)
+
+def add_category(request):
+    form = CategoryForm
+    context = {"form": form}
+    return render(request, "foodie_app/add_category.html", context)

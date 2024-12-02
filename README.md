@@ -24,7 +24,9 @@
 
 - [Note](notes/section6.md)
 
+## Section 7 - Django Forms and User Inputs
 
+- [Note](notes/section7.md)
 
 
 
