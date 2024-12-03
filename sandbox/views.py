@@ -1,9 +1,10 @@
 # sandbox/views.py
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.generic import ListView, DetailView, View
 
 from recipes.models import Recipe
+from sandbox.forms import FeedbackForm
 
 # Function based View
 ## data = ["Pizza", "Pasta", "Salad", "Bread"]
@@ -28,6 +29,20 @@ class RecipeDetailView(DetailView):
     model = Recipe
     template_name = "sandbox/recipeDetail.html"
     context_object_name = "recipe"
+
+def feedback(request):
+    if request.method == "POST":
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            # process the form
+            print(form.cleaned_data)
+            return redirect('thank_you')
+        
+    else:
+        form = FeedbackForm()
+        context = {"form": form}
+        return render(request, "sandbox/feedbacK_form.html", context)
+
 
 ## Customized View
 class SpecificRecipesView(View):
