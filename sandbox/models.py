@@ -6,4 +6,7 @@ class Feedback(models.Model):
     email = models.EmailField()
     feedback = models.TextField()
     satisfaction = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
     

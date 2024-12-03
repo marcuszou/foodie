@@ -241,20 +241,13 @@ class FeedbackForm(forms.Form):
     name = forms.CharField(max_length=100)
     email = forms.EmailField()
     feedback = forms.CharField()
-    satisfaction = forms.ChoiceField(choices)
+    satisfaction = forms.ChoiceField(choices=choices, widget=forms.RadioSelect)
 ```
 
 2- Update `sandbox/models.py`:
 
 ```python
-# sandbox/models.py
-from django.db import models
 
-class Feedback(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    feedback = models.TextField()
-    satisfaction = models.CharField(max_length=10)
 ```
 
 3- Migrate the models in sandbox app:
@@ -306,22 +299,93 @@ def feedback(request):
             # process the form
             print(form.cleaned_data)
             return redirect('thank_you')
-        
     else:
         form = FeedbackForm()
-        context = {"form": form}
-        return render(request, "sandbox/feedbacK_form.html", context)
+
+    context = {"form": form}
+    return render(request, "sandbox/feedbacK_form.html", context)
 ```
 
 7- Will continue in next sub-section.
 
 ## 7.5 Custom Forms - Part 2
 
-1- 
+1- Update `sandbox/urls.py` with a path for `thank_you`:
 
+```python
+path("thank-you/", views.thank_you, name="thank_you")
+```
 
+2- Update `sandbox\views.py` with a function:
 
+```python
+def thank_you(request):
+    return HttpResponse("Thank you for feedback!")
+```
 
+3- Update `sandbox/forms.py` with more function:
+
+```python
+# sandbox/forms.py
+from django import forms
+
+choices = [
+    ("happy", "Happy"), ("neutral", "Neutral"), ("sad", "Sad")
+]
+
+class FeedbackForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    feedback = forms.CharField()
+    satisfaction = forms.ChoiceField(choices=choices, widget=forms.RadioSelect)
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if "@gmail.com" not in email:
+            raise forms.ValidationError("Please use your gmail email")
+        return email
+```
+
+4- Register the models in `sandbox/admin.py`:
+
+```python
+# sandbox/admin.py
+from django.contrib import admin
+
+from sandbox.models import Feedback
+
+# Register your models here.
+admin.site.register(Feedback)
+```
+
+5- Give a try at http://127.0.0.1:8000/sandbox/feedback
+
+If it compains: "thank_you " is not valid view function or pattern name, most likely you have to specify the app name in the `views.py` :
+
+```python
+def feedback(request):
+    if request.method == "POST":
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            # process the form
+            # print(form.cleaned_data)
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            feedback = form.cleaned_data['feedback']
+            satisfaction = form.cleaned_data['satisfaction']
+            Feedback.objects.create(
+                name = name,
+                email = email,
+                feedback = feedback,
+                satisfaction = satisfaction
+            )
+            return redirect("sandbox:thank_you")
+    else:
+        form = FeedbackForm()
+
+    context = {"form": form}
+    return render(request, "sandbox/feedbacK_form.html", context)
+```
 
 
 
