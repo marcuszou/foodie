@@ -1,5 +1,5 @@
 # foodie_app/views.py
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from foodie_app.forms import CategoryForm
 from .models import Category
@@ -21,10 +21,14 @@ def recipes(request, category_id):
 
 def add_category(request):
     if request.method == "POST":
-        print(request.POST)
+        # print(request.POST)
         form = CategoryForm(request.POST)
-        context = {"form": form}
-        return render(request, "foodie_app/index.html", context)
+        if form.is_valid():
+            form.save()
+            return redirect("foodie_app:index")
+        else:
+            context = {"form": form}
+            return render(request, "foodie_app/add_category.html", context)
     else:
         form = CategoryForm
         context = {"form": form}
