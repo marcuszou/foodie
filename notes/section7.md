@@ -547,28 +547,45 @@ Category: Desert
 
 It has to be done under `recipes` app. then,
 
-1- Update `recipes/views.py`:
+1- Update `foodie_app/views.py`:
 
 ```python
-# recipes/views.py
+# foodie_app/views.py
 from django.shortcuts import get_object_or_404, redirect, render
-from foodie_app.forms import RecipeForm
-from foodie_app.models import Category
+
+from foodie_app.forms import CategoryForm
+from .models import Category
 from recipes.models import Recipe
+from foodie_app.forms import RecipeForm
 
 # Create your views here.
-def recipes(request):
+def index(request):
+    categories = Category.objects.all()
+    context = {"categories": categories}
 
-    recipes = Recipe.objects.all()
-    context = {"recipes": recipes}
-    return render(request, "recipes/recipes.html", context)
+    return render(request, "foodie_app/index.html", context)
 
-def recipe(request, recipe_id):
-    recipe = Recipe.objects.get(id=recipe_id)
-    context = {
-        "recipe": recipe
-    }
-    return render(request, "recipes/recipeDetails.html", context)
+def recipes(request, category_id):
+    recipes = Recipe.objects.filter(category=category_id)
+    category = Category.objects.get(pk=category_id)
+
+    context = {"recipes": recipes, "category": category}
+    return render(request, "foodie_app/recipes.html", context)
+
+def add_category(request):
+    if request.method == "POST":
+        # print(request.POST)
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("foodie_app:index")
+        else:
+            context = {"form": form}
+            return render(request, "foodie_app/add_category.html", context)
+    else:
+        form = CategoryForm
+        context = {"form": form}
+        return render(request, "foodie_app/add_category.html", context)
 
 def add_recipe(request, category_id=None):
     category=None
@@ -587,10 +604,10 @@ def add_recipe(request, category_id=None):
         "form": form,
         "category": category
     }
-    return render(request, "resipes/add_recipe.html", context)
+    return render(request, "foodie_app/add_recipe.html", context)
 ```
 
-2- Create a new `recipes/templates/recipes/add_recipe.html`:
+2- Update `foodie_app/templates/foodie_app/add_recipe.html`:
 
 ```django
 {% extends "base.html" %}
@@ -645,11 +662,7 @@ urlpatterns = [
 {% endblock content %}
 ```
 
-5- Give a go. Issue! 
-
-
-
-@paused at 17:00
+5- Give a go.
 
 
 
