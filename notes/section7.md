@@ -387,7 +387,126 @@ def feedback(request):
     return render(request, "sandbox/feedbacK_form.html", context)
 ```
 
+## 7.6 Add Recipe with a Dropdown Category
 
+1- Create a new class-based form called __RecipeForm__ in `foodie_app/forms.py`:
+
+```python
+# foodie_app/forms.py
+from django import forms
+from foodie_app.models import Category
+from recipes.models import Recipe
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ["name"]
+        labels = {"name": "Category Name"}
+
+class RecipeForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = ["name", "description", "ingredients", "directions", "category"]
+```
+
+2- Add a path of __add_recipe__ in `foodie_app/urls.py`, paying attention to the __name__ being __add_recipe_no_genre__, which will be called in the `base.html`:
+
+```python
+# foodie_app/urls.py
+from django.urls import path
+from . import views
+
+app_name = "foodie_app"
+urlpatterns = [
+    path("", views.index, name="index"),
+    path("recipes/<int:category_id>/", views.recipes, name="recipes"),
+    path("add-category/", views.add_category, name="add_category"),
+    path("add_recipe/", views.add_recipe, name="add_recipe_no_genre")
+]
+```
+
+3- Add a function of __add_recipe__ in `foodie_app/views.py` 
+
+```python
+# foodie_app/views.py
+from django.shortcuts import redirect, render
+
+from foodie_app.forms import CategoryForm
+from .models import Category
+from recipes.models import Recipe
+from foodie_app.forms import RecipeForm
+
+# Create your views here.
+def index(request):
+    categories = Category.objects.all()
+    context = {"categories": categories}
+
+    return render(request, "foodie_app/index.html", context)
+
+def recipes(request, category_id):
+    recipes = Recipe.objects.filter(category=category_id)
+    category = Category.objects.get(pk=category_id)
+
+    context = {"recipes": recipes, "category": category}
+    return render(request, "foodie_app/recipes.html", context)
+
+def add_category(request):
+    if request.method == "POST":
+        # print(request.POST)
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("foodie_app:index")
+        else:
+            context = {"form": form}
+            return render(request, "foodie_app/add_category.html", context)
+    else:
+        form = CategoryForm
+        context = {"form": form}
+        return render(request, "foodie_app/add_category.html", context)
+    
+def add_recipe(request):
+    if request.method == "POST":
+        form = RecipeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("foodie_app:index")
+    else:
+        form = RecipeForm()
+        
+    context = {"form": form}
+    return render(request, "foodie_app/add_recipe.html", context)
+```
+
+4- Add a clickable menu item named __Add Recipe__ in the navbar of `templates/base.html`:
+
+```django
+<a href="{% url "foodie_app:add_recipe_no_genre" %}"> Add Recipe </a>
+```
+
+5- Create a __Add Recipe__ form in the new `foodie_app/templates/foodie_app/add_recipe.html` , very similar as `add_category.html`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+    <h3>Add Recipe</h3>
+    <div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save Recipe</button>
+        </form>
+    </div>
+{% endblock content %}
+```
+
+6- Five a try to add a recipe called "New York Pizza" at http://127.0.0.1:8000/add_recipe
+
+
+
+## 7.7 Redirect to Recipe Page
+
+TBD
 
 
 

@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from foodie_app.forms import CategoryForm
 from .models import Category
 from recipes.models import Recipe
+from foodie_app.forms import RecipeForm
 
 # Create your views here.
 def index(request):
@@ -33,3 +34,15 @@ def add_category(request):
         form = CategoryForm
         context = {"form": form}
         return render(request, "foodie_app/add_category.html", context)
+    
+def add_recipe(request):
+    if request.method == "POST":
+        form = RecipeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("foodie_app:index")
+    else:
+        form = RecipeForm()
+        
+    context = {"form": form}
+    return render(request, "foodie_app/add_recipe.html", context)
