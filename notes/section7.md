@@ -247,7 +247,17 @@ class FeedbackForm(forms.Form):
 2- Update `sandbox/models.py`:
 
 ```python
+# sandbox/models.py
+from django.db import models
 
+class Feedback(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    feedback = models.TextField()
+    satisfaction = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
 ```
 
 3- Migrate the models in sandbox app:
@@ -464,7 +474,7 @@ def add_category(request):
         form = CategoryForm
         context = {"form": form}
         return render(request, "foodie_app/add_category.html", context)
-    
+
 def add_recipe(request):
     if request.method == "POST":
         form = RecipeForm(request.POST)
@@ -473,7 +483,7 @@ def add_recipe(request):
             return redirect("foodie_app:index")
     else:
         form = RecipeForm()
-        
+
     context = {"form": form}
     return render(request, "foodie_app/add_recipe.html", context)
 ```
@@ -502,11 +512,146 @@ def add_recipe(request):
 
 6- Five a try to add a recipe called "New York Pizza" at http://127.0.0.1:8000/add_recipe
 
-
-
 ## 7.7 Redirect to Recipe Page
 
-TBD
+This is easy, basically update the`add_recipe` function of `foodie_app/views.py`:
+
+```python
+def add_recipe(request):
+    if request.method == "POST":
+        form = RecipeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("recipes:index")
+    else:
+        form = RecipeForm()
+    context = {"form": form}
+    return render(request, "foodie_app/add_recipe.html", context)
+```
+
+Then try to add a recipe named "Lemon Drizzle Cake" as "Desert" at the home page, then click "Add Recipe" menu at the navbar.
+
+```textile
+Name: Lemon Drizzle Cake
+
+Description: A moist, lemony cake with a sweet-tart glaze, perfect for afternoon tea.
+
+Ingredients: 1 cup sugar, 1/2 cup butter, 2 eggs, 1 1/2 cups flour, 1 tsp baking powder, 1/2 cup milk, zest of 1 lemon, juice of 1 lemon, 3/4 cup powdered sugar.
+
+Directions: Cream butter and sugar. Add eggs one at a time. Mix in flour, baking powder, milk, lemon zest. Pour into a loaf pan, bake at 350degF for 45 minutes. Mix lemon juice and powdered sugar for the glaze. Drizzle over warm cake.
+
+Category: Desert
+```
+
+## 7.8 Add recipe with Pre-populated Genre
+
+It has to be done under `recipes` app. then,
+
+1- Update `recipes/views.py`:
+
+```python
+# recipes/views.py
+from django.shortcuts import get_object_or_404, redirect, render
+from foodie_app.forms import RecipeForm
+from foodie_app.models import Category
+from recipes.models import Recipe
+
+# Create your views here.
+def recipes(request):
+
+    recipes = Recipe.objects.all()
+    context = {"recipes": recipes}
+    return render(request, "recipes/recipes.html", context)
+
+def recipe(request, recipe_id):
+    recipe = Recipe.objects.get(id=recipe_id)
+    context = {
+        "recipe": recipe
+    }
+    return render(request, "recipes/recipeDetails.html", context)
+
+def add_recipe(request, category_id=None):
+    category=None
+    if category_id:
+        # category = Category.objects.get(pk=category_id)
+        category = get_object_or_404(Category, id=category_id)
+        form = RecipeForm(request.POST or None, initial={"category": category})
+    else:
+        form = RecipeForm(request.POST or None)
+    
+    if request.method =="POST" and form.is_valid():
+        new_recipe = form.save()
+        return redirect("foodie_app:recipes", category_id=new_recipe.category.id)
+    
+    context = {
+        "form": form,
+        "category": category
+    }
+    return render(request, "resipes/add_recipe.html", context)
+```
+
+2- Create a new `recipes/templates/recipes/add_recipe.html`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+    <h3>Add a new Recipe 
+        {% if category %}to {{ category.name }}{% endif%}
+    </h3>
+    <div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save Recipe</button>
+        </form>
+    </div>
+{% endblock content %}
+```
+
+3- Update `foodie_app/urls.py`:
+
+```python
+# foodie_app/urls.py
+from django.urls import path
+from . import views
+
+app_name = "foodie_app"
+urlpatterns = [
+    path("", views.index, name="index"),
+    path("recipes/<int:category_id>/", views.recipes, name="recipes"),
+    path("add-category/", views.add_category, name="add_category"),
+    path("add_recipe/", views.add_recipe, name="add_recipe_no_genre"),
+    path("add_recipe/category/<int:category_id>", views.add_recipe, name="add_recipe_with_genre")
+]
+```
+
+4- Update `foodie_app/templates/foodie_app/recipes.html`:
+
+```django
+{% extends "base.html" %}
+{% block content %}
+    <h3>Recipes under <i>{{ category }}</i> </h3>
+    <a href="{% url "foodie_app:add_recipe_with_genre" category_id=category.id %}">Add Recipe</a>
+    <div>
+        {% for recipe in recipes %}
+            <div>
+                <div>
+                    <h5> {{ recipe.name }} </h5>
+                    <p> {{ recipe.description }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
+```
+
+5- Give a go. Issue! 
+
+
+
+@paused at 17:00
+
+
 
 
 
