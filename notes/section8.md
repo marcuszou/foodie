@@ -1,6 +1,8 @@
-# Section 8 Authentication and Authorization in Django
+# Section 8 - Authentication and Authorization in Django
 
-## Intro to Django Authorization - The User Object
+
+
+## 8.1 Intro to Django Authorization - The User Object
 
 Users Accounts:
 
@@ -100,6 +102,64 @@ into the `templates/base.html` file:
 
 then visit the home page to take a look.
 
-## 8.2
+
+
+## 8.2 Creating User Registration Component - Part 1
+
+1- Create a new app: `accounts`
+
+```shell
+python manage.py startapp accounts
+```
+
+2- Register the app in `foodie/settings.py`.
+
+3- Update `accounts/urls.py`:
+
+```python
+from django.urls import path, include
+from .views import register
+
+urlpatterns = [
+    path("register/", register, name="regiser"),
+    path("accounts/", include("django.contrib.auth.urls"))
+]
+```
+
+4- Update `accounts/views.py`:
+
+```python
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+
+# Create your views here.
+def register(request):
+    if request.method != "POST":
+        form = UserCreationForm()
+    else:
+        form = UserCreationForm(data=request.POST)
+        if form.is_valid():
+            new_user = form.save()
+            # Log the user in
+            login(request, new_user)
+            return HttpResponse("Yay! User Created!")
+    context = {"form": form}
+    return render(request, "registration/regiser.html", context)
+```
+
+## 8.3 Register a User Successfully
+
+1- Create `accounts/templates/registration/register.html`:
+
+```django
+```
+
+
+
+
+
+
 
 ## End of the Section

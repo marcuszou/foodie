@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'sandbox',
     'recipes',
     'comments',
+    "accounts",
+    # default apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
