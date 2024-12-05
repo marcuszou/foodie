@@ -1,5 +1,7 @@
 # Section 7 - Django Forms and User Inputs
 
+## 
+
 ## 7.1 Django Forms and User Inputs - Introduction
 
 Django abstracts out -
@@ -89,6 +91,8 @@ urlpatterns = [
 
 What's going on?  It seems needing more fine-tuning.
 
+## 
+
 ## 7.2 Deep Dive into Forms
 
 It looks the `foordie_app/forms.py` bears some issue, the `forms.Form` , which is very generic, shall be replaced with `forms.modelForm`. 
@@ -160,6 +164,8 @@ Basically, Django is all about security in first place, which asks a CSRF token 
 
 You should observe no issue now! Beautiful!
 
+## 
+
 ## 7.3 Form Validation - Save and Redirect
 
 1- Basically modify `foodie_app/views.py` using `redirect` mothod:
@@ -220,6 +226,8 @@ def add_category(request):
 ```
 
 3- try to add a new category at http://127.0.0.1:8000/add-category
+
+
 
 ## 7.4 Custom Forms - Part 1
 
@@ -318,6 +326,8 @@ def feedback(request):
 
 7- Will continue in next sub-section.
 
+
+
 ## 7.5 Custom Forms - Part 2
 
 1- Update `sandbox/urls.py` with a path for `thank_you`:
@@ -396,6 +406,8 @@ def feedback(request):
     context = {"form": form}
     return render(request, "sandbox/feedbacK_form.html", context)
 ```
+
+## 
 
 ## 7.6 Add Recipe with a Dropdown Category
 
@@ -512,6 +524,8 @@ def add_recipe(request):
 
 6- Five a try to add a recipe called "New York Pizza" at http://127.0.0.1:8000/add_recipe
 
+
+
 ## 7.7 Redirect to Recipe Page
 
 This is easy, basically update the`add_recipe` function of `foodie_app/views.py`:
@@ -542,6 +556,8 @@ Directions: Cream butter and sugar. Add eggs one at a time. Mix in flour, baking
 
 Category: Desert
 ```
+
+
 
 ## 7.8 Add recipe with Pre-populated Genre
 
@@ -595,11 +611,11 @@ def add_recipe(request, category_id=None):
         form = RecipeForm(request.POST or None, initial={"category": category})
     else:
         form = RecipeForm(request.POST or None)
-    
+
     if request.method =="POST" and form.is_valid():
         new_recipe = form.save()
         return redirect("foodie_app:recipes", category_id=new_recipe.category.id)
-    
+
     context = {
         "form": form,
         "category": category
@@ -662,10 +678,51 @@ urlpatterns = [
 {% endblock content %}
 ```
 
-5- Give a go.
+5- Give a go at http://127.0.0.1:8000/ then click `Pastries` --> "Add Recipe".
 
 
 
+## 7.9 Code Refector and Explaining What We Just Did
 
+W have finished off those steps in __7.8__.
+
+
+
+## 7.10 Widgets in Django
+
+Basically, this is the idea originated from HTML Text attributes [HTML Input Attributes](https://www.w3schools.com/html/html_form_attributes.asp) and implemented in Django., using a Meta property named `widgets`:
+
+Update `foodie_app/forms.py` in the `class` definitions:
+
+```python
+# foodie_app/forms.py
+from django import forms
+from foodie_app.models import Category
+from recipes.models import Recipe
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ["name"]
+        labels = {"name": "Category Name"}
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Category Name'})
+        }
+
+class RecipeForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = ["name", "description", "ingredients", "directions", "category"]
+        labels = {"name": "Recipe Title"}
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Recipe Title'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description', 'rows': '5'}),
+            'ingredients': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Ingredients', 'rows': '5'}),
+            'directions': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Directions', 'rows': '5'}),
+            'category': forms.Select(attrs={'class': 'form-select'})
+        }
+```
+
+  
 
 ## End of the Section
