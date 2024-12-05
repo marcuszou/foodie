@@ -28,7 +28,9 @@
 
 - [Note](notes/section7.md)
 
+## Section 8 - Authentication and Authorization in Django
 
+- [Note](notes/section8.md)
 
 ## License
 
