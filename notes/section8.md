@@ -154,11 +154,42 @@ def register(request):
 1- Create `accounts/templates/registration/register.html`:
 
 ```django
+{% extends "base.html" %}
+{% block content %}
+    <h3>Register
+    </h3>
+    <div>
+        <form action="{% url "accounts:register" %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Register</button>
+        </form>
+    </div>
+{% endblock content %}
 ```
 
+2- Update `accounts/urls.py`:
 
+```python
+from django.urls import path, include
+from .views import register
 
+app_name = "accounts"
+urlpatterns = [
+    path("register/", register, name="regiser"),
+    path("accounts/", include("django.contrib.auth.urls"))
+]
+```
 
+3- Also add the path in `foodie/urls.py`:
+
+```python
+    path('accounts/', include('accounts.urls'))
+```
+
+4- Give  try at http://127.0.0.1:8000/accounts/register
+
+Issue ....
 
 
 
