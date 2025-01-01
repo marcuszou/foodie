@@ -21,9 +21,9 @@ python -m pip install --upgrade pip   ## Windows
 mkdir foodie
 cd foodie
 
-python -m venv venv
-venv/bin/activate        ## macOS, Linux
-./venv/scripts/activate  ## Windows
+python3 -m venv venv
+source venv/bin/activate        ## macOS, Linux
+./venv/scripts/activate         ## Windows
 
 # Upgrade pip to latest version for the Venv 
 python3 -m pip install --upgrade pip  ## macOS and Linux
@@ -33,8 +33,8 @@ python -m pip install --upgrade pip   ## Windows
 3- Install Django
 
 ```shell
-pip install django
-## pip install -r requirements.txt
+## pip install django
+pip install -r requirements.txt
 ```
 
 4- Create the project named `foodie` in current folder (`.`)
@@ -46,21 +46,13 @@ django-admin startproject foodie .
 ## 3.2 - Django Project File Structure
 
 > foodie/
-> 
 > ├── foodie/
-> 
 > │   ├─\__init__.py
-> 
 > │   ├─ asgi.py
-> 
 > │   ├─ settings.py
-> 
 > │   ├─ urls.py
-> 
 > │   ├─ wsgi.py
-> 
 > ├── manage.py
-> 
 > ├── venv/
 
 ## 3.3 Apps and Running up the Server
